@@ -44,8 +44,6 @@ app.post('/slack/event', eventVerification)
 
 
 
-
-
 const server = app.listen(port, () => {
     console.log("Server Started on port " + server.address().port)
 })

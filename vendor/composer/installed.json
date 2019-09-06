@@ -1,0 +1,119 @@
+[
+    {
+        "name": "psr/log",
+        "version": "1.1.0",
+        "version_normalized": "1.1.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/php-fig/log.git",
+            "reference": "6c001f1daafa3a3ac1d8ff69ee4db8e799a654dd"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/php-fig/log/zipball/6c001f1daafa3a3ac1d8ff69ee4db8e799a654dd",
+            "reference": "6c001f1daafa3a3ac1d8ff69ee4db8e799a654dd",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.3.0"
+        },
+        "time": "2018-11-20T15:27:04+00:00",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "1.0.x-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Psr\\Log\\": "Psr/Log/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "PHP-FIG",
+                "homepage": "http://www.php-fig.org/"
+            }
+        ],
+        "description": "Common interface for logging libraries",
+        "homepage": "https://github.com/php-fig/log",
+        "keywords": [
+            "log",
+            "psr",
+            "psr-3"
+        ]
+    },
+    {
+        "name": "wisembly/elephant.io",
+        "version": "v3.3.1",
+        "version_normalized": "3.3.1.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/Wisembly/elephant.io.git",
+            "reference": "9d56f409fe231a906af87005f83a135565632d3f"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/Wisembly/elephant.io/zipball/9d56f409fe231a906af87005f83a135565632d3f",
+            "reference": "9d56f409fe231a906af87005f83a135565632d3f",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.4.0",
+            "psr/log": "~1.0"
+        },
+        "require-dev": {
+            "phpunit/phpunit": "~4.0"
+        },
+        "time": "2017-09-10T20:38:38+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "ElephantIO\\": [
+                    "src/",
+                    "test/"
+                ]
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Baptiste Clavié",
+                "role": "Maintainer",
+                "email": "baptiste@wisembly.com",
+                "homepage": "http://baptiste.xn--clavi-fsa.net/"
+            },
+            {
+                "name": "Guillaume Potier",
+                "role": "Maintainer",
+                "email": "guillaume@wisembly.com"
+            },
+            {
+                "name": "Ludovic Barreca",
+                "role": "Project Founder",
+                "email": "ludogp2@gmail.com"
+            },
+            {
+                "name": "Elephant.IO Community",
+                "role": "Contributors :)"
+            }
+        ],
+        "description": "Send events to a websocket real time engine though PHP",
+        "homepage": "http://elephant.io",
+        "keywords": [
+            "dialog",
+            "nodejs",
+            "real time",
+            "websocket"
+        ]
+    }
+]

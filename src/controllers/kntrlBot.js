@@ -1,6 +1,7 @@
 const axios = require('axios')
 const {isVerified} = require('../misc/helper')
 const KntrlEvent = require('../services/KntrlEvent')
+const {SLACK_OAUTH_ACCESS_TOKEN,SLACK_POST_MESSAGE} = require('../../config')
 
 const kntrlServerMessage = new KntrlEvent()
 
@@ -19,7 +20,7 @@ module.exports.kntrlBot = (req, res) => {
 
 
 const dialogData = {
-    token: 'dsd',
+    token: SLACK_OAUTH_ACCESS_TOKEN,
     trigger_id: 'sds',
     dialog: JSON.stringify({
         title: 'Save it to ClipIt!',
@@ -54,8 +55,16 @@ const dialogData = {
     })
 };
 
+const header = {
+    'Authorization': `Bearer ${SLACK_OAUTH_ACCESS_TOKEN}`
+}
+
 // open the dialog by calling the dialogs.open method and sending the payload
-axios.post('https://slack.com/api/dialog.open', dialogData)
+axios.post(
+    SLACK_POST_MESSAGE,
+    dialogData,
+    header
+    )
     .then((result) => {
        console.log('====================================');
        console.log(result.data);
