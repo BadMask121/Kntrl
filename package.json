@@ -1,0 +1,28 @@
+{
+  "name": "kntrl",
+  "version": "1.0.0",
+  "description": "A slack app to control server access and server logs",
+  "main": "index.js",
+  "scripts": {
+    "app": "nodemon ./src/app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://BadMask121@bitbucket.org/divergentDev/kntrl.git"
+  },
+  "author": "Emakpor Jeffrey",
+  "license": "MIT",
+  "homepage": "https://bitbucket.org/divergentDev/kntrl#readme",
+  "dependencies": {
+    "axios": "^0.19.0",
+    "dotenv": "^8.1.0",
+    "express": "^4.17.1",
+    "qs": "^6.8.0",
+    "tsscmp": "^1.0.6"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "mocha": "^6.2.0"
+  }
+}
