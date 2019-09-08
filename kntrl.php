@@ -57,7 +57,7 @@ $args = $argv;
      $csf_message = $args[6];
      $csf_log = $args[7];
      $csf_trigger = $args[8];
-
+var_dump($args);
 // exclude your own server from reports due to dumb user errors
 if ($ip == "xxx.xxx.xxx.xxx" || $ip == "xxx.xxx.xxx.xxx" || $ip == "xxx.xxx.xxx.xxx") { die; }
 
