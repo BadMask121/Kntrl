@@ -183,7 +183,7 @@ class kntrlServer {
                  * @todo on every change to file send alert to slack
                  * once report has been sent to slack
                  * check if this.filterJournalLog returns *this.serverSshStore 
-                 * then reportToSlack
+                 * then reportToKntrlSlack
                  * else listen for new changes in activity 
                  */
                     
@@ -192,7 +192,7 @@ class kntrlServer {
                         .forEach((val) =>{
                             value = journctl.type[val]
                             if(this.filterJournalLog(data, value) !== [])
-                               reportToSlack(this.serverSshStore)
+                               reportToKntrlSlack(this.serverSshStore)
                         })
                     
                 
