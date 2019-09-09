@@ -41,7 +41,7 @@ class kntrlServer {
 
 
         this.serverSshStore = []
-        this.journctl = 'journalctl _SYSTEMD_UNIT=sshd.service | egrep "Failed|Accepted"'
+        this.journctl = 'journalctl _SYSTEMD_UNIT=sshd.service | while read -d "" aa do egrep "Failed|Accepted" | tail -1 done'
     }
 
 
