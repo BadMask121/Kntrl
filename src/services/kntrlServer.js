@@ -1,7 +1,11 @@
 const fs = require('fs')
 const readLine = require('readline')
-const { normalizeFilePath } = require('../misc/helper')
+const {normalizeFilePath} = require('../misc/helper')
 const { fail2ban, journctl } = require('../../config')
+const $ = require('yargs')
+const _ = require('node-cmd')
+
+
 
 /**
  * 
@@ -17,7 +21,7 @@ const { fail2ban, journctl } = require('../../config')
  * attempts with below command
  * 
  * @command journalctl _SYSTEMD_UNIT = sshd.service | grep "Failed"
- * @command journalctl _SYSTEMD_UNIT = sshd.service | grep "Accepted"
+ * @command journalctl_SYSTEMD_UNIT = sshd.service | grep "Accepted"
  * 
  * and for  servers that has fail2ban we will be reading logs of banned ips from the default fail2ban
  * log location @command /var/log/fail2ban.log
@@ -37,6 +41,7 @@ class kntrlServer {
 
 
         this.serverSshStore = []
+        this.journctl = 'journalctl _SYSTEMD_UNIT=sshd.service | egrep "Failed|Accepted"'
     }
 
 
@@ -46,7 +51,7 @@ class kntrlServer {
         const ipRegex = /\b[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\b/
         const dateRegex = /\d{4}\-(0?[1-9]|1[012])\-(0?[1-9]|[12][0-9]|3[01])*/
         const timeRegex = /(?:[01]\d|2[0123]):(?:[012345]\d):(?:[012345]\d)/
-
+    
         const fileStream = fs.createReadStream(FILE)
         const readL = readLine.createInterface({
             input: fileStream,
@@ -69,25 +74,41 @@ class kntrlServer {
     }
 
 
-    async init() {
-        let fail2BanFile = null
-        const journalctl_accepted = normalizeFilePath(`../${journctl.accepted}`)
-        const journalctl_failed = normalizeFilePath(`../${journctl.failed}`)
+    init() {
+
+        _.get(
+            this.journctl,
+            (err, data, stderr) => {
+               console.log(data);
+               
+                return data
+            }
+        );
+
+        // let fail2BanFile = null
+        // const journalctl_accepted = normalizeFilePath(`../${journctl.accepted}`)
+        // const journalctl_failed = normalizeFilePath(`../${journctl.failed}`)
 
 
 
-        if (fail2ban.exists)
-            fail2BanFile = normalizeFilePath(`../${fail2ban.location}`)
+        // if (fail2ban.exists)
+        //     fail2BanFile = normalizeFilePath(`../${fail2ban.location}`)
 
-        if (fail2BanFile !== null && fs.existsSync(fail2BanFile)) {
-            await this.readLines(fail2BanFile, 'Found')
-        }
+        // if (fail2BanFile !== null && fs.existsSync(fail2BanFile)) {
+        //     await this.readLines(fail2BanFile, 'Found')
+        // }
 
 
-        (fs.existsSync(journalctl_accepted)) ? await this.readLines(journalctl_accepted, 'Accepted'): null(fs.existsSync(journalctl_failed)) ? await this.readLines(journalctl_failed, 'Ban') : null
+        // (fs.existsSync(journalctl_accepted))
+        //     ? await this.readLines(journalctl_accepted, 'Accepted') : null
+                
+        // // eslint-disable-next-line no-unexpected-multiline
+        // (fs.existsSync(journalctl_failed)) 
+        //     ? await this.readLines(journalctl_failed, 'Ban') : null
 
-        console.log(this.serverSshStore);
-        return false
+        // console.log(this.serverSshStore);
+        
+    // return false
     }
 }
 
