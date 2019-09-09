@@ -2,10 +2,18 @@ const fs = require('fs'),
     path = require('path');
       
 const readLine = require('readline')
-const {normalizeFilePath, walkDir} = require('../misc/helper')
-const { fail2ban, journctl } = require('../../config')
+const {
+    walkDir,
+    hmsToSecondsOnly,
+    getMilliSeconds
+} = require('../misc/helper')
+const {
+    journctl,
+    redis,
+    REDIS_KEY
+} = require('../../config')
 
-let fileWatcher= require('filewatcher')
+let fileWatcher = require('filewatcher')
 let fw = fileWatcher()
 const $ = require('yargs')
 const _ = require('node-cmd')
@@ -49,10 +57,16 @@ class kntrlServer {
         this.journctl = journctl.command
     }
 
+    /**
+     * 
+     * first to filter the logs we need to first check if journal log date in miliseconds
+     * already exists in mem cache if it doesnt scrap get new access login log 
+     * and set memcache time in miliseconds
+     */
 
+    async filterJournalLog(DATA, LOG_TYPE) {
 
-    filterJournalLog(DATA, LOG_TYPE) {
-
+        
         let payload = []
         const ipRegex = /\b[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\b/
         const timeRegex = /(?:[01]\d|2[0123]):(?:[012345]\d):(?:[012345]\d)/
@@ -74,7 +88,24 @@ class kntrlServer {
                    LOG_TYPE
                }
             ]
-            this.serverSshStore.push(payload)
+
+        
+        
+        // cach our activity time to avoid repeating alerts
+        let miliSecondsOfActivityTime = getMilliSeconds(hmsToSecondsOnly(time))
+        let cachedActivityTime = await redis
+                                .getAsync(REDIS_KEY)
+            
+            // check if our current cach time is equal to our recent activity time
+            // eslint-disable-next-line radix
+            if (parseInt(cachedActivityTime) === miliSecondsOfActivityTime)
+                return []
+        
+        await redis
+            .setAsync(REDIS_KEY, miliSecondsOfActivityTime)
+      
+        // push to global store if activity is new 
+        this.serverSshStore.push(payload)
         
     return this.serverSshStore
     }
@@ -143,14 +174,20 @@ class kntrlServer {
                             LOG_TYPE: 'Failed'
                         }]]
                     */
-                        
-                    Object.keys(journctl.type)
-                        .forEach((val) => {
-                            let LOG_TYPE = journctl.type[val]
-                            this.filterJournalLog(data, LOG_TYPE)
-                        })
+                    
+                    this.filterJournalLog(data, journctl.type.ACCEPTED)
+                    this.filterJournalLog(data, journctl.type.FAILED)
+                    
+
+                /**
+                 * 
+                 * @todo on every change to file send alert to slack
+                 */
+                //    reportToSlack(this.serverSshStore)
                 }
             );
+
+             
         })
 
         /**
@@ -172,7 +209,7 @@ class kntrlServer {
 
         // console.log(this.serverSshStore);
         
-        return this.serverSshStore
+        return true
     }
 }
 

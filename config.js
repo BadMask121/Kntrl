@@ -1,3 +1,6 @@
+
+const redis = require('./src/services/redisClient')
+
 const dotenv = require('dotenv')
 dotenv.config()
 
@@ -64,5 +67,11 @@ module.exports = {
             FAILURE: "Failure"
         },
         command: env.KNTRL_JOURNAL_COMMAND
-    }
+    },
+
+    redis,
+
+    REDIS_URL: env.REDIS_URL,
+
+    REDIS_KEY: env.REDIS_KEY
 }

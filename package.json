@@ -21,6 +21,7 @@
     "filewatcher": "^3.0.1",
     "node-cmd": "^3.0.0",
     "qs": "^6.8.0",
+    "redis": "^2.8.0",
     "socket.io-client": "^2.2.0",
     "tsscmp": "^1.0.6",
     "yargs": "^14.0.0"
