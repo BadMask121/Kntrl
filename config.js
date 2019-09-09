@@ -54,8 +54,15 @@ module.exports = {
      for scraping ssh login access logs
      *   the location for fail2ban will change once we start interaction with server\
      *      for testing we are using a mock .txt file
+     * '/var/log/journal'
      *  */
     journctl: {
-        location: '/var/log/journal'
+        location: env.KNTRL_JOURNAL_LOG,
+        type: {
+            ACCEPTED: "Accepted",
+            FAILED: "Failed",
+            FAILURE: "Failure"
+        },
+        command: env.KNTRL_JOURNAL_COMMAND
     }
 }

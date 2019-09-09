@@ -46,11 +46,15 @@ class kntrlServer {
 
 
         this.serverSshStore = []
-        this.journctl = 'journalctl _SYSTEMD_UNIT=sshd.service | egrep "Failed|Accepted" | tail -1'
+        this.journctl = journctl.command
     }
 
   
-
+    /**
+     * @TODO move to helpers.js 2019-09-09 16:14:53
+     * @param {*} dir 
+     * @param {*} callback 
+     */
     walkDir(dir, callback) {
         fs.readdirSync(dir).forEach(f => {
             let dirPath = path.join(dir, f);
@@ -60,7 +64,35 @@ class kntrlServer {
         });
     }
 
-    async readLines(FILE, LOG_TYPE) {
+
+
+    filterJournalLog(DATA, LOG_TYPE) {
+
+        let payload = []
+        const ipRegex = /\b[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\b/
+        const timeRegex = /(?:[01]\d|2[0123]):(?:[012345]\d):(?:[012345]\d)/
+
+        // eslint-disable-next-line no-magic-numbers
+        if (DATA.indexOf(LOG_TYPE) !== -1 || DATA.indexOf(LOG_TYPE) !== -1 ) {
+             
+            let ip =  DATA.match(ipRegex)[0]
+            let time = DATA.match(timeRegex)[0]
+
+            // get date from the position of time
+            let date = DATA.substr(DATA.indexOf(time) - 7, DATA.indexOf(time)) 
+            payload = [
+               {
+                   ip,
+                   time,
+                   date,
+                   LOG_TYPE
+               }
+            ]
+             this.serverSshStore.push(payload)
+         }
+    }
+
+    async Fail2BanReadLines(FILE, LOG_TYPE) {
 
         const ipRegex = /\b[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\b/
         const dateRegex = /\d{4}\-(0?[1-9]|1[012])\-(0?[1-9]|[12][0-9]|3[01])*/
@@ -88,30 +120,61 @@ class kntrlServer {
     }
 
 
+
+    /**
+     * 
+     * we will be getting our journal ssh login logs on @var config.journal and watch the changes to the files
+     * so we can track the ssh activities
+     */
     init() {
 
-        _.get(
-            this.journctl,
-            (err, data, stderr) => {
-                return data;
-            }
-        );
-
-
+        
+        if (!fs.existsSync(journctl.location))
+            return false
+        
+        /**
+         * recursively read and register all journal logs to be watched by fileWatcher
+         */
         this.walkDir(journctl.location, (filePath) => {
             fw.add(filePath)
         });
 
+       
+           // on file change the file last ssh login activity if it was failed or accepted
         fw.on('change', (file, stat) => {
-            console.log('====================================');
-            console.log(file, stat);
-            console.log('====================================');
+
+            // run bash journal log command on host machine to retrieve failed or accepted ssh login
+            _.get(
+                this.journctl,
+                (err, data, stderr) => {
+                    
+                    /**
+                     * @var filterJournalLog will return the ip,time, date and log_type specified
+                     * 
+                     * format [[{
+                            ip: '66.154.110.198',
+                            time: '23:11:43',
+                            date: 'Sep 08 ',
+                            LOG_TYPE: 'Failed'
+                        }]]
+                    */
+                        
+                    Object.keys(journctl.type)
+                        .forEach((val) => {
+                            let LOG_TYPE = journctl.type[val]
+                            this.filterJournalLog(data, LOG_TYPE)
+                        })
+                }
+            );
         })
 
+        
+        /**
+         * 
+         * we will be enabling fail2ban feature when journal log system works file
+         */
 
         // let fail2BanFile = null
-        // const journalctl_accepted = normalizeFilePath(`../${journctl.accepted}`)
-        // const journalctl_failed = normalizeFilePath(`../${journctl.failed}`)
 
 
 
@@ -123,16 +186,9 @@ class kntrlServer {
         // }
 
 
-        // (fs.existsSync(journalctl_accepted))
-        //     ? await this.readLines(journalctl_accepted, 'Accepted') : null
-                
-        // // eslint-disable-next-line no-unexpected-multiline
-        // (fs.existsSync(journalctl_failed)) 
-        //     ? await this.readLines(journalctl_failed, 'Ban') : null
-
         // console.log(this.serverSshStore);
         
-    // return false
+        return this.serverSshStore
     }
 }
 
