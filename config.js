@@ -5,6 +5,11 @@ const env = process.env
 
 
 
+String.prototype.regexIndexOf = function(regex, startpos) {
+    var indexOf = this.substring(startpos || 0).search(regex);
+    return (indexOf >= 0) ? (indexOf + (startpos || 0)) : indexOf;
+}
+
 module.exports = {
 
     /**
@@ -31,5 +36,27 @@ module.exports = {
 
 
     // url for posting message to slack
-    SLACK_POST_MESSAGE: 'https://slack.com/api/chat.postMessage'
+    SLACK_POST_MESSAGE: 'https://slack.com/api/chat.postMessage',
+
+
+    /**
+     *  custom fail2ban setting for scraping ssh login access logs
+     *   the location for fail2ban will change once we start interaction with server\
+     *      for testing we are using a mock .txt file
+     *  */
+    fail2ban: {
+        exists: true,
+        location: './fail2banexample.txt'
+    },
+
+    /**
+     * custom journctl setting
+     for scraping ssh login access logs
+     *   the location for fail2ban will change once we start interaction with server\
+     *      for testing we are using a mock .txt file
+     *  */
+    journctl: {
+        accepted: './journalctl_accepted.txt',
+        failed: './journalctl_failed.txt'
+    }
 }

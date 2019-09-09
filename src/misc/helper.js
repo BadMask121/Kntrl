@@ -1,5 +1,8 @@
 const crypto = require('crypto');
 const timingSafeCompare = require('tsscmp');
+const path = require('path')
+
+
 const {
     SLACK_SIGNING_SECRET
 } = require('../../config')
@@ -23,6 +26,22 @@ const isVerified = (req) => {
     return timingSafeCompare(hmac.digest('hex'), hash);
 };
 
+
+function normalizeFilePath(FILE) {
+    return path.normalize(path.resolve(FILE))
+}
+
+function filterAcceptedIp() {
+
+}
+
+function filterBanIp() {
+
+}
+
 module.exports = {
-    isVerified
+    isVerified,
+    normalizeFilePath,
+    filterAcceptedIp,
+    filterBanIp
 };

@@ -1,0 +1,15 @@
+
+[jeff@vps ~]$ journalctl _SYSTEMD_UNIT=sshd.service | egrep "Failed|Failure"
+Aug 27 23:01:21 vps sshd[20895]: Failed password for invalid user tunder from 129.56.33.250 port 56512 ssh2
+Aug 27 23:02:55 vps sshd[20895]: Failed password for invalid user tunder from 129.56.33.250 port 56512 ssh2
+Sep 04 12:07:22 vps sshd[843]: Failed password for root from 169.255.127.189 port 50430 ssh2
+Sep 04 12:08:12 vps sshd[971]: Failed password for root from 169.255.127.189 port 50447 ssh2
+Sep 08 20:19:34 vps sshd[3833]: Failed password for root from 104.223.91.74 port 1579 ssh2
+Sep 08 21:02:34 vps sshd[9492]: Failed password for jeff from 66.154.110.171 port 2764 ssh2
+Sep 08 21:02:40 vps sshd[9492]: Failed password for jeff from 66.154.110.171 port 2764 ssh2
+Sep 08 21:07:49 vps sshd[18015]: Failed password for jeff from 66.154.110.171 port 2745 ssh2
+Sep 08 21:34:27 vps sshd[28628]: Failed password for jeff from 104.223.91.58 port 1941 ssh2
+Sep 08 21:34:35 vps sshd[28628]: Failed password for jeff from 104.223.91.58 port 1941 ssh2
+Sep 08 21:44:01 vps sshd[11557]: Failed password for jeff from 104.223.91.58 port 1967 ssh2
+Sep 08 21:45:16 vps sshd[11557]: Failed password for jeff from 104.223.91.58 port 1967 ssh2
+Sep 08 23:11:43 vps sshd[17539]: Failed password for jeff from 66.154.110.198 port 1297 ssh2

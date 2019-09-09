@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "app": "nodemon ./src/app.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha --timeout 40000 test/*.js || true"
   },
   "repository": {
     "type": "git",
@@ -16,14 +16,12 @@
   "homepage": "https://bitbucket.org/divergentDev/kntrl#readme",
   "dependencies": {
     "axios": "^0.19.0",
+    "chai": "^4.2.0",
     "dotenv": "^8.1.0",
     "express": "^4.17.1",
+    "mocha": "^6.2.0",
     "qs": "^6.8.0",
     "socket.io-client": "^2.2.0",
     "tsscmp": "^1.0.6"
-  },
-  "devDependencies": {
-    "chai": "^4.2.0",
-    "mocha": "^6.2.0"
   }
 }
