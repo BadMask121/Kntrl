@@ -56,7 +56,6 @@ module.exports = {
      *      for testing we are using a mock .txt file
      *  */
     journctl: {
-        accepted: './journalctl_accepted.txt',
-        failed: './journalctl_failed.txt'
+        location: '/var/log/journal'
     }
 }

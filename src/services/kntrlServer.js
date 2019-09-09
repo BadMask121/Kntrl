@@ -1,7 +1,12 @@
-const fs = require('fs')
+const fs = require('fs'),
+    path = require('path');
+      
 const readLine = require('readline')
 const {normalizeFilePath} = require('../misc/helper')
 const { fail2ban, journctl } = require('../../config')
+
+let fileWatcher= require('filewatcher')
+let fw = fileWatcher()
 const $ = require('yargs')
 const _ = require('node-cmd')
 
@@ -41,10 +46,19 @@ class kntrlServer {
 
 
         this.serverSshStore = []
-        this.journctl = 'journalctl _SYSTEMD_UNIT=sshd.service | while read -d "" aa do egrep "Failed|Accepted" | tail -1 done'
+        this.journctl = 'journalctl _SYSTEMD_UNIT=sshd.service | egrep "Failed|Accepted" | tail -1'
     }
 
+  
 
+    walkDir(dir, callback) {
+        fs.readdirSync(dir).forEach(f => {
+            let dirPath = path.join(dir, f);
+            let isDirectory = fs.statSync(dirPath).isDirectory();
+            isDirectory
+                ? this.walkDir(dirPath, callback) : callback(path.join(dir, f));
+        });
+    }
 
     async readLines(FILE, LOG_TYPE) {
 
@@ -79,11 +93,21 @@ class kntrlServer {
         _.get(
             this.journctl,
             (err, data, stderr) => {
-               console.log(data);
-               
-                return data
+                return data;
             }
         );
+
+
+        this.walkDir(journctl.location, (filePath) => {
+            fw.add(filePath)
+        });
+
+        fw.on('change', (file, stat) => {
+            console.log('====================================');
+            console.log(file, stat);
+            console.log('====================================');
+        })
+
 
         // let fail2BanFile = null
         // const journalctl_accepted = normalizeFilePath(`../${journctl.accepted}`)
