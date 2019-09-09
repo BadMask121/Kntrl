@@ -2,7 +2,7 @@ const fs = require('fs'),
     path = require('path');
       
 const readLine = require('readline')
-const {normalizeFilePath} = require('../misc/helper')
+const {normalizeFilePath, walkDir} = require('../misc/helper')
 const { fail2ban, journctl } = require('../../config')
 
 let fileWatcher= require('filewatcher')
@@ -49,21 +49,6 @@ class kntrlServer {
         this.journctl = journctl.command
     }
 
-  
-    /**
-     * @TODO move to helpers.js 2019-09-09 16:14:53
-     * @param {*} dir 
-     * @param {*} callback 
-     */
-    walkDir(dir, callback) {
-        fs.readdirSync(dir).forEach(f => {
-            let dirPath = path.join(dir, f);
-            let isDirectory = fs.statSync(dirPath).isDirectory();
-            isDirectory
-                ? this.walkDir(dirPath, callback) : callback(path.join(dir, f));
-        });
-    }
-
 
 
     filterJournalLog(DATA, LOG_TYPE) {
@@ -73,13 +58,14 @@ class kntrlServer {
         const timeRegex = /(?:[01]\d|2[0123]):(?:[012345]\d):(?:[012345]\d)/
 
         // eslint-disable-next-line no-magic-numbers
-        if (DATA.indexOf(LOG_TYPE) !== -1 || DATA.indexOf(LOG_TYPE) !== -1 ) {
+        if (DATA.indexOf(LOG_TYPE) === -1) 
+            return false
              
-            let ip =  DATA.match(ipRegex)[0]
-            let time = DATA.match(timeRegex)[0]
+            const ip = DATA.match(ipRegex)[0]
+            const time = DATA.match(timeRegex)[0]
 
-            // get date from the position of time
-            let date = DATA.substr(DATA.indexOf(time) - 7, DATA.indexOf(time)) 
+            // get date backwards from the position of time
+            const date = DATA.substr(DATA.indexOf(time) - 7, DATA.indexOf(time)) 
             payload = [
                {
                    ip,
@@ -88,8 +74,9 @@ class kntrlServer {
                    LOG_TYPE
                }
             ]
-             this.serverSshStore.push(payload)
-         }
+            this.serverSshStore.push(payload)
+        
+    return this.serverSshStore
     }
 
     async Fail2BanReadLines(FILE, LOG_TYPE) {
@@ -135,12 +122,11 @@ class kntrlServer {
         /**
          * recursively read and register all journal logs to be watched by fileWatcher
          */
-        this.walkDir(journctl.location, (filePath) => {
+        walkDir(journctl.location, (filePath) => {
             fw.add(filePath)
         });
 
-       
-           // on file change the file last ssh login activity if it was failed or accepted
+           // on file journal folder files change the file last ssh login activity 
         fw.on('change', (file, stat) => {
 
             // run bash journal log command on host machine to retrieve failed or accepted ssh login
