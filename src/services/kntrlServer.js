@@ -70,10 +70,11 @@ class kntrlServer {
         let payload = []
         const ipRegex = /\b[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\b/
         const timeRegex = /(?:[01]\d|2[0123]):(?:[012345]\d):(?:[012345]\d)/
-
+        
+        
         // eslint-disable-next-line no-magic-numbers
         if (DATA.indexOf(LOG_TYPE) === -1) 
-            return false
+            return []
              
             const ip = DATA.match(ipRegex)[0]
             const time = DATA.match(timeRegex)[0]
@@ -91,12 +92,12 @@ class kntrlServer {
 
         
         
-        // cach our activity time to avoid repeating alerts
+        // cache our activity time to avoid repeating alerts
         let miliSecondsOfActivityTime = getMilliSeconds(hmsToSecondsOnly(time))
         let cachedActivityTime = await redis
                                 .getAsync(REDIS_KEY)
             
-            // check if our current cach time is equal to our recent activity time
+            // check if our current cache time is equal to our recent activity time
             // eslint-disable-next-line radix
             if (parseInt(cachedActivityTime) === miliSecondsOfActivityTime)
                 return []
@@ -109,6 +110,8 @@ class kntrlServer {
         
     return this.serverSshStore
     }
+
+
 
     async Fail2BanReadLines(FILE, LOG_TYPE) {
 
@@ -175,15 +178,26 @@ class kntrlServer {
                         }]]
                     */
                     
-                    this.filterJournalLog(data, journctl.type.ACCEPTED)
-                    this.filterJournalLog(data, journctl.type.FAILED)
-                    
-
-                /**
+                    /**
                  * 
                  * @todo on every change to file send alert to slack
+                 * once report has been sent to slack
+                 * check if this.filterJournalLog returns *this.serverSshStore 
+                 * then reportToSlack
+                 * else listen for new changes in activity 
                  */
-                //    reportToSlack(this.serverSshStore)
+                    
+                    let value = null
+                    Object.keys(journctl.type)
+                        .forEach((val) =>{
+                            value = journctl.type[val]
+                            if(this.filterJournalLog(data, value) !== [])
+                               reportToSlack(this.serverSshStore)
+                        })
+                    
+                
+                // set this.serverSshStore = [] empty
+                   this.serverSshStore = []
                 }
             );
 
