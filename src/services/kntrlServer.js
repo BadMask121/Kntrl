@@ -128,7 +128,6 @@ class kntrlServer {
 
            // on file journal folder files change the file last ssh login activity 
         fw.on('change', (file, stat) => {
-
             // run bash journal log command on host machine to retrieve failed or accepted ssh login
             _.get(
                 this.journctl,
@@ -154,7 +153,6 @@ class kntrlServer {
             );
         })
 
-        
         /**
          * 
          * we will be enabling fail2ban feature when journal log system works file
