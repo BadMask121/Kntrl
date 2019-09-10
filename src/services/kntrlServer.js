@@ -119,8 +119,6 @@ class kntrlServer {
         ) 
             return []
 
-            
-        
         const getDateFromLog = new Date(year, monthInInt, day)
        
         // cache our activity time to avoid repeating alerts
@@ -205,6 +203,7 @@ class kntrlServer {
 
            // on file journal folder files change the file last ssh login activity 
         fw.on('change', (file, stat) => {
+            this.serverSshStore = []
             // run bash journal log command on host machine to retrieve failed or accepted ssh login
             _.get(
                 this.journctl,
