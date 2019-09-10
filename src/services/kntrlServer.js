@@ -163,7 +163,7 @@ class kntrlServer {
         }
         // push to global store if activity is new 
         this.serverSshStore.push(payload)
-        console.log(this.serverSshStore);
+        
     return this.serverSshStore
     }
 

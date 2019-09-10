@@ -52,6 +52,7 @@ class KntrlBot {
             return false
 
         let message = null
+        console.log(payload);
         
         payload.forEach((element) => {
             switch (element.LOG_TYPE) {
@@ -94,10 +95,14 @@ class KntrlBot {
                         }
                     )
                     .then((res) => {
+                        console.log(res);
+                        
                         if (res.data === 'ok')
                             return true
                     })
                     .catch((err) => {
+                        console.log(err);
+                        
                         return false
                     });
             })
