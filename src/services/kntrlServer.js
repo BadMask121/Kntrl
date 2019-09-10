@@ -163,7 +163,7 @@ class kntrlServer {
         }
         // push to global store if activity is new 
         this.serverSshStore.push(payload)
-        
+
     return this.serverSshStore
     }
 
@@ -237,11 +237,8 @@ class kntrlServer {
                     Object.keys(journctl.type)
                         .forEach((val) =>{
                             value = journctl.type[val]
-
-                            if (this.filterJournalLog(data, value) !== []) {
-                                kntrl.reportToSlack(this.serverSshStore)
-                            }
-
+                            
+                            kntrl.reportToSlack(this.filterJournalLog(data, value))
                         })
                    
                 }
