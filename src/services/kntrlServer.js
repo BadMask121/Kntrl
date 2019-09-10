@@ -163,7 +163,7 @@ class kntrlServer {
         }
         // push to global store if activity is new 
         this.serverSshStore.push(payload)
-
+        console.log(this.serverSshStore);
     return this.serverSshStore
     }
 
@@ -240,7 +240,6 @@ class kntrlServer {
 
                             if (this.filterJournalLog(data, value) !== []) {
                                 kntrl.reportToSlack(this.serverSshStore)
-                                 console.log(this.serverSshStore);
                             }
 
                         })
