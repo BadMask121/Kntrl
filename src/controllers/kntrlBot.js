@@ -48,31 +48,39 @@ class KntrlBot {
 
     // send ssh activities to slack bot
     reportToSlack(payload) {
-        console.log(payload);
-        if (!(payload instanceof Array) || payload === [])
-            return false
-
-        let message = null
-        
-        
-        
-        payload.forEach((element) => {
-            switch (element.LOG_TYPE) {
-                case journctl.type.ACCEPTED:
-                    message = reportAcceptedLoginLayout(element)
-                    break;
+        payload
+            .then((data) => {
+                console.log(data);
                 
-                case journctl.type.FAILED:
-                    message = reportFailedLoginLayout(element)
-                    break;
-            
-                default:
-                    break;
-            }
+                if (!(data instanceof Array) || data === [])
+                    return false
+                
+                let message = null
+                
+                data.forEach((element) => {
+                    switch (element.LOG_TYPE) {
+                        case journctl.type.ACCEPTED:
+                            message = reportAcceptedLoginLayout(element)
+                            break;
 
-            if (this.sendPostMessageToKntrlSlack(message))
-                return true
-        })
+                        case journctl.type.FAILED:
+                            message = reportFailedLoginLayout(element)
+                            break;
+
+                        default:
+                            break;
+                    }
+
+                    if (this.sendPostMessageToKntrlSlack(message))
+                        return true
+                })
+                
+                return false
+            })
+            .catch(err => {
+                console.log(err);
+            })
+        
         
         return false
     }
