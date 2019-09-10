@@ -13,8 +13,8 @@ const {
     REDIS_KEY
 } = require('../../config')
 
-let fileWatcher = require('filewatcher')
-let fw = fileWatcher()
+const fileWatcher = require('filewatcher')
+const fw = fileWatcher()
 const $ = require('yargs')
 const _ = require('node-cmd')
 
