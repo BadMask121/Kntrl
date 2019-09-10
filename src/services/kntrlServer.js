@@ -19,6 +19,8 @@ const $ = require('yargs')
 const _ = require('node-cmd')
 
 
+const KntrlBot = require('../controllers/kntrlBot')
+const kntrl = new KntrlBot()
 
 /**
  * 
@@ -70,30 +72,64 @@ class kntrlServer {
         let payload = []
         const ipRegex = /\b[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\b/
         const timeRegex = /(?:[01]\d|2[0123]):(?:[012345]\d):(?:[012345]\d)/
-        
+        Date.shortMonths = [
+                            'Jan',
+                            'Feb',
+                            'Mar',
+                            'Apr',
+                            'May',
+                            'Jun',
+                            'Jul',
+                            'Aug',
+                            'Sep',
+                            'Oct',
+                            'Nov',
+                            'Dec'
+                        ];
+
         
         // eslint-disable-next-line no-magic-numbers
-        if (DATA.indexOf(LOG_TYPE) === -1) 
+        if (DATA.indexOf(LOG_TYPE) === -1)
             return []
              
-            const ip = DATA.match(ipRegex)[0]
-            const time = DATA.match(timeRegex)[0]
+        const ip = DATA.match(ipRegex)[0]
+        const time = DATA.match(timeRegex)[0]
 
-            // get date backwards from the position of time
-            const date = DATA.substr(DATA.indexOf(time) - 7, DATA.indexOf(time)) 
-            payload = [
-               {
-                   ip,
-                   time,
-                   date,
-                   LOG_TYPE
-               }
-            ]
+        // get date backwards from the position of time
+        let date = DATA.substr(DATA.indexOf(time) - 7, DATA.indexOf(time)).trim()
+     
+        //get current year as year is not set in journal log we fix in our our year which is the current year
+        let dateCurrent = new Date()
+        let year = parseInt(dateCurrent.getFullYear())
 
+        // short month e.g Jan, Feb from log
+        let shortMonth = date.substring(0, 3) 
+
+        // get day int from log
+        let day = parseInt(date.substring(4, date.length))
+        
+         // storing month in integer 
+        let monthInInt = null
+
+        Date.shortMonths.forEach((element, index) => {
+            // adding + 1 to complete the month
+            if (element === shortMonth)
+                monthInInt = parseInt(index + 1)
+        });
         
         
+        if (
+            typeof year !== "number"
+            || typeof monthInInt !== "number"
+            || typeof day !== "number"
+        )
+            return []
+        
+        const getDateFromLog = new Date(year, monthInInt, day)
+       
         // cache our activity time to avoid repeating alerts
-        let miliSecondsOfActivityTime = getMilliSeconds(hmsToSecondsOnly(time))
+        let miliSecondsOfActivityTime = getMilliSeconds(hmsToSecondsOnly(time)) + getDateFromLog.getTime()
+        
         let cachedActivityTime = await redis
                                 .getAsync(REDIS_KEY)
             
@@ -104,7 +140,18 @@ class kntrlServer {
         
         await redis
             .setAsync(REDIS_KEY, miliSecondsOfActivityTime)
-      
+        
+        // reformating date to yyyy-mm-dd
+        date = `${year}-${monthInInt}-${day}`
+
+        // gather our payload
+        payload = {
+            ip,
+            time,
+            date,
+            LOG_TYPE
+        }
+
         // push to global store if activity is new 
         this.serverSshStore.push(payload)
         
@@ -149,7 +196,6 @@ class kntrlServer {
      */
     init() {
 
-        
         if (!fs.existsSync(journctl.location))
             return false
         
@@ -170,38 +216,28 @@ class kntrlServer {
                     /**
                      * @var filterJournalLog will return the ip,time, date and log_type specified
                      * 
-                     * format [[{
+                     * format [{
                             ip: '66.154.110.198',
                             time: '23:11:43',
                             date: 'Sep 08 ',
                             LOG_TYPE: 'Failed'
-                        }]]
+                        }]
                     */
-                    
-                    /**
-                 * 
-                 * @todo on every change to file send alert to slack
-                 * once report has been sent to slack
-                 * check if this.filterJournalLog returns *this.serverSshStore 
-                 * then reportToKntrlSlack
-                 * else listen for new changes in activity 
-                 */
-                    
+
                     let value = null
                     Object.keys(journctl.type)
                         .forEach((val) =>{
                             value = journctl.type[val]
+
                             if(this.filterJournalLog(data, value) !== [])
-                               reportToKntrlSlack(this.serverSshStore)
+                               kntrl.reportToSlack(this.serverSshStore)
                         })
                     
-                
-                // set this.serverSshStore = [] empty
+                   // set this.serverSshStore = [] empty
                    this.serverSshStore = []
                 }
             );
 
-             
         })
 
         /**

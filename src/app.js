@@ -8,12 +8,10 @@ const {
 } = require('../config')
 
 
-const { eventVerification } = require('./controllers/events/eventVerification')
-const {kntrlBot} = require('./controllers/kntrlBot')
+const KntrlBot = require('./controllers/kntrlBot')
 
 const app = express()
-
-
+const kntrl = new KntrlBot()
 
 
 /**
@@ -38,11 +36,8 @@ app.use(bodyParser.json({
  * controllers and router communication (endpoints)
  */
 
-app.post('/', kntrlBot)
-
-app.post('/slack/event', eventVerification)
-
-
+app.post('/', kntrl.mainKntrlBot)
+app.post('/slack/event', kntrl.eventVerification)
 
 const server = app.listen(port, () => {
     console.log("Server Started on port " + server.address().port)

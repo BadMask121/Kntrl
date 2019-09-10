@@ -38,8 +38,25 @@ module.exports = {
     SLACK_OAUTH_ACCESS_TOKEN: env.SLACK_OAUTH_ACCESS_TOKEN,
 
 
+    /**
+     * 
+     * Kntrl Slack bot access token should be placed in env
+     */
+    SLACK_BOT_ACCESS_TOKEN: env.SLACK_BOT_ACCESS_TOKEN,
+
+
     // url for posting message to slack
     SLACK_POST_MESSAGE: 'https://slack.com/api/chat.postMessage',
+
+    /**
+     * 
+     * please note we use this object to kntrl app on to your channel(s)
+     * 
+     * do add slack hooks to channel(s) that kntrl is installed on
+     */
+    KNTRL_DEFAULT_SLACK_CHANNEL: [
+        "https://hooks.slack.com/services/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"
+    ],
 
 
     /**
@@ -49,7 +66,7 @@ module.exports = {
      *  */
     fail2ban: {
         exists: true,
-        location: './fail2banexample.txt'
+        location: `${env.FAIL2BAN_LOG_LOCATION}`
     },
 
     /**

@@ -221,7 +221,12 @@
         "padding-line-between-statements": "error",
         "prefer-arrow-callback": "error",
         "prefer-const": "off",
-        "prefer-destructuring": "error",
+        "prefer-destructuring": ["error", {
+            "array": false,
+            "object": true
+        }, {
+            "enforceForRenamedProperties": false
+        }],
         "prefer-named-capture-group": "off",
         "prefer-numeric-literals": "error",
         "prefer-object-spread": "error",
@@ -232,7 +237,7 @@
         "prefer-template": "error",
         "quote-props": "off",
         "quotes": "off",
-        "radix": "error",
+        "radix": "off",
         "require-await": "error",
         "require-jsdoc": "off",
         "require-unicode-regexp": "off",

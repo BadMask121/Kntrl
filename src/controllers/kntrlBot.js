@@ -1,78 +1,117 @@
 const axios = require('axios')
 const {isVerified} = require('../misc/helper')
-const KntrlEvent = require('../services/KntrlEvent')
-const {SLACK_OAUTH_ACCESS_TOKEN,SLACK_POST_MESSAGE} = require('../../config')
+const {
+    error,
+    icon,
+    reportToKntrl
+} = require('../misc/constants')
 
-const kntrlServerMessage = new KntrlEvent()
+const {
+    KNTRL_DEFAULT_SLACK_CHANNEL,
+    SLACK_BOT_ACCESS_TOKEN,
+    journctl
+} = require('../../config')
 
-module.exports.kntrlBot = (req, res) => {
+const {
+    reportAcceptedLoginLayout,
+    reportFailedLoginLayout
+} = require('../messageLayout/KntrlBotMessageStore')
 
-    const {
-        token,
-        text
-    } = req.body
+
+class KntrlBot {
     
-    if (!isVerified(req))
-        return res.sendStatus(404)
+    
+    // starting up event Verification for slack
+    eventVerification (req, res) {
+        const payload = req.body
+        const {
+            challenge
+        } = payload
 
-    return res.json("hello")
+        const data = {
+            challenge
+        }
+
+        return res.json(data)
+    }
+
+
+    // main kntrl Bot controller for interacting with our slack bot and user
+    mainKntrlBot(req, res) {
+        const {
+             token,
+             text
+             } = req.body
+
+        if (!isVerified(req))
+            return res.sendStatus(error.NOT_FOUND.code)
+
+        return res.json("hello")
+    }
+
+
+    // send ssh activities to slack bot
+    reportToSlack(payload) {
+        if (!(payload instanceof Array))
+            return false
+
+        let message = null
+        
+        payload.forEach((element) => {
+            switch (element.LOG_TYPE) {
+                case journctl.type.ACCEPTED:
+                    message = reportAcceptedLoginLayout(element)
+                    break;
+                
+                case journctl.type.FAILED:
+                    message = reportFailedLoginLayout(element)
+                    break;
+            
+                default:
+                    break;
+            }
+
+            if (this.sendPostMessageToKntrlSlack(message))
+                return true
+        })
+        
+        return false
+    }
+
+    // make request to slack
+    sendPostMessageToKntrlSlack(message) {
+        const headers = {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${SLACK_BOT_ACCESS_TOKEN}`
+        }
+
+        if (!(KNTRL_DEFAULT_SLACK_CHANNEL instanceof Array)) {
+             return false
+        }
+
+        KNTRL_DEFAULT_SLACK_CHANNEL
+            .forEach(element => {
+                axios.post(
+                        element,
+                        message, {
+                            headers
+                        }
+                    )
+                    .then((res) => {
+                        if (res.data === 'ok')
+                            return true
+                    })
+                    .catch((err) => {
+                        return false
+                    });
+            })
+           
+        
+
+        
+        
+        return false
+    }
 }
 
-
-const dialogData = {
-    token: SLACK_OAUTH_ACCESS_TOKEN,
-    trigger_id: 'sds',
-    dialog: JSON.stringify({
-        title: 'Save it to ClipIt!',
-        callback_id: 'clipit',
-        submit_label: 'ClipIt',
-        elements: [{
-                label: 'Message Text',
-                type: 'textarea',
-                name: 'message',
-                value: 'ds'
-            },
-            {
-                label: 'Importance',
-                type: 'select',
-                name: 'importance',
-                value: 'Medium 💎',
-                options: [{
-                        label: 'High',
-                        value: 'High 💎💎✨'
-                    },
-                    {
-                        label: 'Medium',
-                        value: 'Medium 💎'
-                    },
-                    {
-                        label: 'Low',
-                        value: 'Low ⚪️'
-                    }
-                ],
-            },
-        ]
-    })
-};
-
-const header = {
-    'Authorization': `Bearer ${SLACK_OAUTH_ACCESS_TOKEN}`
-}
-
-// open the dialog by calling the dialogs.open method and sending the payload
-axios.post(
-    SLACK_POST_MESSAGE,
-    dialogData,
-    header
-    )
-    .then((result) => {
-       console.log('====================================');
-       console.log(result.data);
-       console.log('====================================');
-    })
-    .catch((err) => {
-        console.log('====================================');
-        console.log(err);
-        console.log('====================================');
-        // res.sendStatus(500);
-    });
+module.exports = KntrlBot
