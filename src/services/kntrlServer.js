@@ -195,10 +195,10 @@ class kntrlServer {
      * so we can track the ssh activities
      */
     init() {
-
+        
         if (!fs.existsSync(journctl.location))
             return false
-        
+
         /**
          * recursively read and register all journal logs to be watched by fileWatcher
          */

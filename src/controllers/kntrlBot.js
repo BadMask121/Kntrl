@@ -2,8 +2,6 @@ const axios = require('axios')
 const {isVerified} = require('../misc/helper')
 const {
     error,
-    icon,
-    reportToKntrl
 } = require('../misc/constants')
 
 const {
@@ -16,18 +14,8 @@ const {
     reportAcceptedLoginLayout,
     reportFailedLoginLayout
 } = require('../messageLayout/KntrlBotMessageStore')
-const KntrlServer = require('../services/kntrlServer')
-
-const kntrlServer = new KntrlServer()
 
 class KntrlBot {
-    
-    
-
-    init() {
-        if (!kntrlServer.init())
-            throw new Error('Kntrling Server bot not running')
-    }
 
     // starting up event Verification for slack
     eventVerification (req, res) {

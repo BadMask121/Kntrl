@@ -7,13 +7,13 @@ const {
 
 
 const KntrlBot = require('./controllers/kntrlBot')
+const KntrlServer = require('./services/kntrlServer')
 
 const app = express()
-
-
-
 const kntrl = new KntrlBot()
-kntrl.init()
+
+const kntrlServer = new KntrlServer()
+kntrlServer.init()
 
 /**
  * 
