@@ -2,17 +2,18 @@ const express = require('express');
 const bodyParser = require('body-parser')
 
 const {
-    port,
-    SLACK_OAUTH_ACCESS_TOKEN,
-    SLACK_POST_MESSAGE
+    port
 } = require('../config')
 
 
 const KntrlBot = require('./controllers/kntrlBot')
 
 const app = express()
-const kntrl = new KntrlBot()
 
+
+
+const kntrl = new KntrlBot()
+kntrl.init()
 
 /**
  * 
