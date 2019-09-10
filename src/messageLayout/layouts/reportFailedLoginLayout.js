@@ -9,7 +9,7 @@ const title = `${reportToKntrl.FAILED.title} ${iconSelect}`
 
 module.exports = function reportFailedLoginLayout (payload) {
 
-    const text = `*${payload.date} ${payload.time}* ${info} *${payload.ip}*`
+    const text = `*${payload.date} ${payload.time}* ${info} *${payload.ip}* on *${payload.user}*`
 
     return {
         type: 'mrkdwn',

@@ -85,9 +85,14 @@ class kntrlServer {
                             'Dec'
                         ];
 
-    
+        const userStartFlag = "for"
+        const userEndFlag = "from"
+        
         const ip = DATA.match(ipRegex)[0]
         const time = DATA.match(timeRegex)[0]
+        
+        // get ssh activity user
+        const user = DATA.substring(DATA.indexOf(userStartFlag) + userStartFlag.length, DATA.indexOf(userEndFlag)).trim()
 
         // get date backwards from the position of time
         let date = DATA.substr(DATA.indexOf(time) - 7, DATA.indexOf(time)).trim()
@@ -145,7 +150,8 @@ class kntrlServer {
             ip,
             time,
             date,
-            LOG_TYPE
+            LOG_TYPE,
+            user
         }
         // push to global store if activity is new 
         this.serverSshStore.push(payload)
@@ -216,7 +222,8 @@ class kntrlServer {
                             ip: '66.154.110.198',
                             time: '23:11:43',
                             date: 'Sep 08 ',
-                            LOG_TYPE: 'Failed'
+                            LOG_TYPE: 'Failed',
+                            user:'root'
                         }]
                     */
 

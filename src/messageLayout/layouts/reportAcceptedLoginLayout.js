@@ -10,7 +10,7 @@ const title = `${reportToKntrl.ACCEPTED.title} ${iconSelect}`
 
 module.exports = function reportAcceptedLoginLayout (payload) {
 
-    const text = `*${payload.date} ${payload.time}* ${info} *${payload.ip}*`
+    const text = `*${payload.date} ${payload.time}* ${info} *${payload.user}* by *${payload.ip}*`
 
     return {
         type: 'mrkdwn',
