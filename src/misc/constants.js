@@ -21,7 +21,7 @@ module.exports = {
     reportToKntrl: {
         ACCEPTED: {
             info: `logged into`,
-            title: 'Kntrl Login Accepted'
+            title: 'Kntrl Intruder Alert'
            
         },
         FAILED: {
