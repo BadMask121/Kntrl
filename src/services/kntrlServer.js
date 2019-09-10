@@ -68,7 +68,7 @@ class kntrlServer {
 
     async filterJournalLog(DATA, LOG_TYPE) {
 
-        
+        console.log('start');
         let payload = []
         const ipRegex = /\b[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\b/
         const timeRegex = /(?:[01]\d|2[0123]):(?:[012345]\d):(?:[012345]\d)/
@@ -128,7 +128,6 @@ class kntrlServer {
             || typeof day !== "number"
         ) {
             this.serverSshStore = []
-
             return []
         }
             
@@ -145,7 +144,6 @@ class kntrlServer {
             // eslint-disable-next-line radix
             if (parseInt(cachedActivityTime) === miliSecondsOfActivityTime) {
                 this.serverSshStore = []
-
                 return []
             }
                 
@@ -163,7 +161,8 @@ class kntrlServer {
             date,
             LOG_TYPE
         }
-
+        console.log(this.serverSshStore);
+        
         // push to global store if activity is new 
         this.serverSshStore.push(payload)
         
