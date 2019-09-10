@@ -48,11 +48,12 @@ class KntrlBot {
 
     // send ssh activities to slack bot
     reportToSlack(payload) {
+        console.log(payload);
         if (!(payload instanceof Array) || payload === [])
             return false
 
         let message = null
-        console.log(payload);
+        
         
         
         payload.forEach((element) => {
