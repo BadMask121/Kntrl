@@ -89,8 +89,12 @@ class kntrlServer {
 
         
         // eslint-disable-next-line no-magic-numbers
-        if (DATA.indexOf(LOG_TYPE) === -1)
+        if (DATA.indexOf(LOG_TYPE) === -1) {
+            this.serverSshStore = []
+
             return []
+        }
+            
              
         const ip = DATA.match(ipRegex)[0]
         const time = DATA.match(timeRegex)[0]
@@ -122,8 +126,12 @@ class kntrlServer {
             typeof year !== "number"
             || typeof monthInInt !== "number"
             || typeof day !== "number"
-        )
+        ) {
+            this.serverSshStore = []
+
             return []
+        }
+            
         
         const getDateFromLog = new Date(year, monthInInt, day)
        
@@ -135,8 +143,12 @@ class kntrlServer {
             
             // check if our current cache time is equal to our recent activity time
             // eslint-disable-next-line radix
-            if (parseInt(cachedActivityTime) === miliSecondsOfActivityTime)
+            if (parseInt(cachedActivityTime) === miliSecondsOfActivityTime) {
+                this.serverSshStore = []
+
                 return []
+            }
+                
         
         await redis
             .setAsync(REDIS_KEY, miliSecondsOfActivityTime)
@@ -229,12 +241,12 @@ class kntrlServer {
                         .forEach((val) =>{
                             value = journctl.type[val]
 
-                            if(this.filterJournalLog(data, value) !== [])
-                               kntrl.reportToSlack(this.serverSshStore)
+                            if (this.filterJournalLog(data, value) !== []) {
+                                kntrl.reportToSlack(this.serverSshStore)
+                            }
+
                         })
-                    
-                   // set this.serverSshStore = [] empty
-                   this.serverSshStore = []
+                   
                 }
             );
 
