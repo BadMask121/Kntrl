@@ -50,8 +50,7 @@ class KntrlBot {
     reportToSlack(payload) {
         payload
             .then((data) => {
-                console.log(data);
-                
+
                 if (!(data instanceof Array) || data === [])
                     return false
                 
@@ -74,13 +73,12 @@ class KntrlBot {
                     if (this.sendPostMessageToKntrlSlack(message))
                         return true
                 })
-                
+
                 return false
             })
             .catch(err => {
                 console.log(err);
             })
-        
         
         return false
     }
@@ -105,15 +103,11 @@ class KntrlBot {
                         }
                     )
                     .then((res) => {
-                        console.log(res);
-                        
                         if (res.data === 'ok')
                             return true
                     })
                     .catch((err) => {
                         console.log(err);
-                        
-                        return false
                     });
             })
            

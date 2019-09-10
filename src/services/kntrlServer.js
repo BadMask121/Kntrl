@@ -85,12 +85,7 @@ class kntrlServer {
                             'Dec'
                         ];
 
-        
-        // eslint-disable-next-line no-magic-numbers
-        if (DATA.indexOf(LOG_TYPE) === -1) 
-            return []
-            
-             
+    
         const ip = DATA.match(ipRegex)[0]
         const time = DATA.match(timeRegex)[0]
 
@@ -230,7 +225,9 @@ class kntrlServer {
                     Object.keys(journctl.type)
                         .forEach((val) =>{
                             value = journctl.type[val]
-                            kntrl.reportToSlack(this.filterJournalLog(data, value))
+                               // eslint-disable-next-line no-magic-numbers
+                               if (data.indexOf(value) !== -1)
+                                    kntrl.reportToSlack(this.filterJournalLog(data, value))
                         })
                    
                 }
