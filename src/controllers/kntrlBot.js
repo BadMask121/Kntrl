@@ -15,9 +15,6 @@ const {
     reportFailedLoginLayout
 } = require('../messageLayout/KntrlBotMessageStore')
 
-
-const PayloadHandler = require('../services/payloadHandler')
-
 class KntrlBot {
 
 
@@ -61,20 +58,46 @@ class KntrlBot {
             text,
             channel_id
         } = req.body
-
-
-        const payloadHandler = new PayloadHandler()
-
-
+        console.log(this);
         if (!isVerified(req))
             return res.sendStatus(error.NOT_FOUND.code)
 
         if (typeof req.body.payload !== "undefined")
-            return payloadHandler.requestPayloadFactory(req.body.payload)
+            requestPayloadFactory(req.body)
 
         return res.json('d')
     }
 
+
+
+
+
+    actionBasedMessage(action) {
+
+
+        switch (action.name) {
+            case 'Killalert':
+                this.killSignal(action)
+                break;
+            case 'Banalert':
+                this.banSignal(action)
+                break;
+            default:
+                break;
+        }
+    }
+
+    killSignal(action) {
+        if (action.value !== null)
+
+            return
+    }
+
+    banSignal(action) {
+        if (action.value !== null)
+
+            return
+    }
 
     // send ssh activities to slack bot
     reportToSlack(payload) {
@@ -145,5 +168,20 @@ class KntrlBot {
     }
 }
 
+function requestPayloadFactory(payload) {
+
+    payload = JSON.parse(payload)
+    console.log(payload);
+    // working with action based slack request
+    if (typeof payload.actions !== "undefined" && typeof payload.callback_id !== "undefined") {
+        payload.actions
+            .forEach(element => {
+                let actions = payload[element]
+                actions.callback_id = payload.callback_id
+                if (typeof actions.name !== "undefined" && typeof actions.value !== "undefined")
+                    this.actionBasedMessage(actions)
+            })
+    }
+}
 
 module.exports = KntrlBot
