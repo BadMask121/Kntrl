@@ -1,78 +1,138 @@
 const axios = require('axios')
-const {isVerified} = require('../misc/helper')
-const KntrlEvent = require('../services/KntrlEvent')
-const {SLACK_OAUTH_ACCESS_TOKEN,SLACK_POST_MESSAGE} = require('../../config')
+const { isVerified } = require('../misc/helper')
+const {
+    error,
+} = require('../misc/constants')
 
-const kntrlServerMessage = new KntrlEvent()
+const {
+    KNTRL_DEFAULT_SLACK_CHANNEL,
+    SLACK_BOT_ACCESS_TOKEN,
+    journctl
+} = require('../../config')
 
-module.exports.kntrlBot = (req, res) => {
+const {
+    reportAcceptedLoginLayout,
+    reportFailedLoginLayout
+} = require('../messageLayout/KntrlBotMessageStore')
 
-    const {
-        token,
-        text
-    } = req.body
-    
-    if (!isVerified(req))
-        return res.sendStatus(404)
+class KntrlBot {
 
-    return res.json("hello")
-}
+    // starting up event Verification for slack
+    eventVerification(req, res) {
+        const payload = req.body
+        const {
+            challenge
+        } = payload
+
+        const data = {
+            challenge
+        }
+
+        return res.json(data)
+    }
 
 
-const dialogData = {
-    token: SLACK_OAUTH_ACCESS_TOKEN,
-    trigger_id: 'sds',
-    dialog: JSON.stringify({
-        title: 'Save it to ClipIt!',
-        callback_id: 'clipit',
-        submit_label: 'ClipIt',
-        elements: [{
-                label: 'Message Text',
-                type: 'textarea',
-                name: 'message',
-                value: 'ds'
-            },
-            {
-                label: 'Importance',
-                type: 'select',
-                name: 'importance',
-                value: 'Medium 💎',
-                options: [{
-                        label: 'High',
-                        value: 'High 💎💎✨'
-                    },
-                    {
-                        label: 'Medium',
-                        value: 'Medium 💎'
-                    },
-                    {
-                        label: 'Low',
-                        value: 'Low ⚪️'
+
+    /**
+     * 
+     * @param {
+     * token: 'LSB9sW62siZ7ZYOwo7Ff43xI',
+         team_id: 'T8T2PTRMK',
+         team_domain: 'divergent-ng',
+         channel_id: 'GMWJAMNBT',
+         channel_name: 'privategroup',
+         user_id: 'ULS2JJX35',
+         user_name: 'jeffreyefemena4',
+         command: '/kntrl',
+         text: 'port',
+     }
+     req
+     * @param {*} res 
+     */
+    // main kntrl Bot controller for interacting with our slack bot and user
+    mainKntrlBot(req, res) {
+        const {
+            token,
+            text,
+            channel_id
+        } = req.body
+
+        if (!isVerified(req))
+            return res.sendStatus(error.NOT_FOUND.code)
+
+
+        console.log(req);
+        return res.json('d')
+    }
+
+
+    // send ssh activities to slack bot
+    reportToSlack(payload) {
+        payload
+            .then((data) => {
+
+                if (!(data instanceof Array) || data === [])
+                    return false
+
+                let message = null
+
+                data.forEach((element) => {
+                    switch (element.LOG_TYPE) {
+                        case journctl.type.ACCEPTED:
+                            message = reportAcceptedLoginLayout(element)
+                            break;
+
+                        case journctl.type.FAILED:
+                            message = reportFailedLoginLayout(element)
+                            break;
+
+                        default:
+                            break;
                     }
-                ],
-            },
-        ]
-    })
-};
 
-const header = {
-    'Authorization': `Bearer ${SLACK_OAUTH_ACCESS_TOKEN}`
+                    if (this.sendPostMessageToKntrlSlack(message))
+                        return true
+                })
+
+                return false
+            })
+            .catch(err => {
+                console.log(err);
+            })
+
+        return false
+    }
+
+    // make request to slack
+    sendPostMessageToKntrlSlack(message) {
+        const headers = {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${SLACK_BOT_ACCESS_TOKEN}`
+        }
+
+        if (!(KNTRL_DEFAULT_SLACK_CHANNEL instanceof Array)) {
+            return false
+        }
+
+        KNTRL_DEFAULT_SLACK_CHANNEL
+            .forEach(element => {
+                axios.post(
+                        element,
+                        message, {
+                            headers
+                        }
+                    )
+                    .then((res) => {
+                        if (res.data === 'ok')
+                            return true
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                    });
+            })
+
+        return false
+    }
 }
 
-// open the dialog by calling the dialogs.open method and sending the payload
-axios.post(
-    SLACK_POST_MESSAGE,
-    dialogData,
-    header
-    )
-    .then((result) => {
-       console.log('====================================');
-       console.log(result.data);
-       console.log('====================================');
-    })
-    .catch((err) => {
-        console.log('====================================');
-        console.log(err);
-        console.log('====================================');
-        // res.sendStatus(500);
-    });
+module.exports = KntrlBot

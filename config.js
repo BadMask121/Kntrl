@@ -1,3 +1,5 @@
+const redis = require('./src/services/redisClient')
+
 const dotenv = require('dotenv')
 dotenv.config()
 
@@ -5,11 +7,11 @@ const env = process.env
 
 
 
+
 String.prototype.regexIndexOf = function(regex, startpos) {
     var indexOf = this.substring(startpos || 0).search(regex);
     return (indexOf >= 0) ? (indexOf + (startpos || 0)) : indexOf;
 }
-
 module.exports = {
 
     /**
@@ -35,8 +37,25 @@ module.exports = {
     SLACK_OAUTH_ACCESS_TOKEN: env.SLACK_OAUTH_ACCESS_TOKEN,
 
 
+    /**
+     * 
+     * Kntrl Slack bot access token should be placed in env
+     */
+    SLACK_BOT_ACCESS_TOKEN: env.SLACK_BOT_ACCESS_TOKEN,
+
+
     // url for posting message to slack
     SLACK_POST_MESSAGE: 'https://slack.com/api/chat.postMessage',
+
+    /**
+     * 
+     * please note we use this object to kntrl app on to your channel(s)
+     * 
+     * do add slack hooks to channel(s) that kntrl is installed on
+     */
+    KNTRL_DEFAULT_SLACK_CHANNEL: [
+        "https://hooks.slack.com/services/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"
+    ],
 
 
     /**
@@ -46,7 +65,7 @@ module.exports = {
      *  */
     fail2ban: {
         exists: true,
-        location: './fail2banexample.txt'
+        location: `${env.FAIL2BAN_LOG_LOCATION}`
     },
 
     /**
@@ -54,9 +73,21 @@ module.exports = {
      for scraping ssh login access logs
      *   the location for fail2ban will change once we start interaction with server\
      *      for testing we are using a mock .txt file
+     * '/var/log/journal'
      *  */
     journctl: {
-        accepted: './journalctl_accepted.txt',
-        failed: './journalctl_failed.txt'
-    }
+        location: env.KNTRL_JOURNAL_LOG,
+        type: {
+            ACCEPTED: "Accepted",
+            FAILED: "Failed",
+            FAILURE: "Failure"
+        },
+        command: env.KNTRL_JOURNAL_COMMAND
+    },
+
+    redis,
+
+    REDIS_URL: env.REDIS_URL,
+
+    REDIS_KEY: env.REDIS_KEY
 }

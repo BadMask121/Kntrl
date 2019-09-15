@@ -2,7 +2,7 @@
   "name": "kntrl",
   "version": "1.0.0",
   "description": "A slack app to control server access and server logs",
-  "main": "index.js",
+  "main": "./src/*.js",
   "scripts": {
     "app": "nodemon ./src/app.js",
     "test": "mocha --timeout 40000 test/*.js || true"
@@ -16,12 +16,24 @@
   "homepage": "https://bitbucket.org/divergentDev/kntrl#readme",
   "dependencies": {
     "axios": "^0.19.0",
-    "chai": "^4.2.0",
+    "country-list": "^2.2.0",
     "dotenv": "^8.1.0",
     "express": "^4.17.1",
-    "mocha": "^6.2.0",
+    "filewatcher": "^3.0.1",
+    "node-cmd": "^3.0.0",
     "qs": "^6.8.0",
+    "redis": "^2.8.0",
     "socket.io-client": "^2.2.0",
-    "tsscmp": "^1.0.6"
+    "tsscmp": "^1.0.6",
+    "yargs": "^14.0.0"
+  },
+  "devDependencies": {
+    "casual": "^1.6.2",
+    "chai": "^4.2.0",
+    "chai-http": "^4.3.0",
+    "debug": "^4.1.1",
+    "easygraphql-tester": "^5.1.6",
+    "graphql-tools": "^4.0.5",
+    "mocha": "^6.2.0"
   }
 }

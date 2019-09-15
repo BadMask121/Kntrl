@@ -1,6 +1,7 @@
 const crypto = require('crypto');
 const timingSafeCompare = require('tsscmp');
 const path = require('path')
+const fs = require('fs')
 
 
 const {
@@ -27,21 +28,46 @@ const isVerified = (req) => {
 };
 
 
+/**
+ * 
+ * @param {*} dir 
+ * @param {*} callback 
+ */
+function walkDir(dir, callback) {
+    fs.readdirSync(dir).forEach(file => {
+        let dirPath = path.join(dir, file);
+        let isDirectory = fs.statSync(dirPath).isDirectory();
+        
+        isDirectory
+            ? walkDir(dirPath, callback) : callback(path.join(dir, file));
+    });
+}
+
 function normalizeFilePath(FILE) {
     return path.normalize(path.resolve(FILE))
 }
 
-function filterAcceptedIp() {
+function hmsToSecondsOnly(str) {
+    let p = str.split(':'),
+        s = 0,
+        m = 1
 
+    while (p.length > 0) {
+        s += m * parseInt(p.pop(), 10);
+        m *= 60;
+    }
+
+    return s;
 }
 
-function filterBanIp() {
-
+function getMilliSeconds(num) {
+    return num * 1000
 }
 
 module.exports = {
     isVerified,
     normalizeFilePath,
-    filterAcceptedIp,
-    filterBanIp
+    walkDir,
+    hmsToSecondsOnly,
+    getMilliSeconds
 };

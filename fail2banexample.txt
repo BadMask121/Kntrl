@@ -1,18 +1,6 @@
 [jeff@vps fail2ban]$ sudo tail -F /var/log/fail2ban.log
-2019-09-08 21:43:01,515 fail2ban.filter         [10029]: INFO    Added logfile = /var/log/httpd/error_log
-2019-09-08 21:43:01,516 fail2ban.filter         [10029]: INFO    Set maxRetry = 5
-2019-09-08 21:43:01,517 fail2ban.filter         [10029]: INFO    Set jail log file encoding to ANSI_X3.4-1968
-2019-09-08 21:43:01,518 fail2ban.actions        [10029]: INFO    Set banTime = 3600
-2019-09-08 21:43:01,519 fail2ban.filter         [10029]: INFO    Set findtime = 600
-2019-09-08 21:43:01,621 fail2ban.filter         [10029]: INFO    [sshd] Found 104.223.91.58
-2019-09-08 21:43:01,621 fail2ban.jail           [10029]: INFO    Jail 'sshd' started
-2019-09-08 21:43:01,622 fail2ban.filter         [10029]: INFO    [sshd] Found 104.223.91.58
-2019-09-08 21:43:01,623 fail2ban.filter         [10029]: INFO    [sshd] Found 104.223.91.58
-2019-09-08 21:43:01,633 fail2ban.jail           [10029]: INFO    Jail 'apache-auth' started
-2019-09-08 21:43:59,839 fail2ban.filter         [10029]: INFO    [sshd] Found 104.223.91.58
 2019-09-08 21:44:01,584 fail2ban.filter         [10029]: INFO    [sshd] Found 104.223.91.58
 2019-09-08 21:44:02,129 fail2ban.actions        [10029]: NOTICE  [sshd] Ban 104.223.91.58
-
 2019-09-08 22:44:02,312 fail2ban.actions        [10029]: NOTICE  [sshd] Unban 104.223.91.58
 
 	
