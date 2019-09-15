@@ -70,35 +70,6 @@ class KntrlBot {
 
 
 
-
-
-    actionBasedMessage(action) {
-
-
-        switch (action.name) {
-            case 'Killalert':
-                this.killSignal(action)
-                break;
-            case 'Banalert':
-                this.banSignal(action)
-                break;
-            default:
-                break;
-        }
-    }
-
-    killSignal(action) {
-        if (action.value !== null)
-
-            return
-    }
-
-    banSignal(action) {
-        if (action.value !== null)
-
-            return
-    }
-
     // send ssh activities to slack bot
     reportToSlack(payload) {
         payload
@@ -168,20 +139,5 @@ class KntrlBot {
     }
 }
 
-function requestPayloadFactory(payload) {
-
-    payload = JSON.parse(payload)
-    console.log(payload);
-    // working with action based slack request
-    if (typeof payload.actions !== "undefined" && typeof payload.callback_id !== "undefined") {
-        payload.actions
-            .forEach(element => {
-                let actions = payload[element]
-                actions.callback_id = payload.callback_id
-                if (typeof actions.name !== "undefined" && typeof actions.value !== "undefined")
-                    this.actionBasedMessage(actions)
-            })
-    }
-}
 
 module.exports = KntrlBot
