@@ -15,10 +15,15 @@ const {
     reportFailedLoginLayout
 } = require('../messageLayout/KntrlBotMessageStore')
 
+
+const PayloadHandler = require('../services/payloadHandler')
+
 class KntrlBot {
+
 
     // starting up event Verification for slack
     eventVerification(req, res) {
+
         const payload = req.body
         const {
             challenge
@@ -57,11 +62,16 @@ class KntrlBot {
             channel_id
         } = req.body
 
+
+        const payloadHandler = new PayloadHandler()
+
+
         if (!isVerified(req))
             return res.sendStatus(error.NOT_FOUND.code)
 
+        if (typeof req.body.payload !== "undefined")
+            return payloadHandler.requestPayloadFactory(req.body.payload)
 
-        console.log(req);
         return res.json('d')
     }
 
@@ -134,5 +144,6 @@ class KntrlBot {
         return false
     }
 }
+
 
 module.exports = KntrlBot

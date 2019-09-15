@@ -23,18 +23,17 @@ module.exports = function reportAcceptedLoginLayout(payload) {
             "actions": [
 
                 {
-                    "name": "alert",
+                    "name": "Killalert",
                     "text": "Send Kill Signal",
                     "type": "button",
-                    "value": "accept"
+                    "value": `${payload.ip}`
                 },
                 {
-                    "name": "alert",
+                    "name": "Banalert",
                     "text": "Ban Ip",
                     "type": "button",
-                    "value": "accept",
                     "style": "danger",
-                    "value": "ban",
+                    "value": `${payload.ip}`,
                     "confirm": {
                         "tile": `Are you sure you want to ban *${payload.ip}*`,
                         "text": `*${payload.ip}* is an alien huh? `,
