@@ -1,14 +1,22 @@
 /* eslint-disable global-require */
-const {KNTRL_URL_ACCESS} = require('../misc/constants')
+const {KNTRL_URL_ACCESS, commands} = require('../misc/constants')
 const {
     enterServerPasswordMessageLayout
 } = require('../messageLayout/KntrlBotMessageStore')
 
+const escape = require('lodash.escaperegexp')
+const _ = require('node-cmd')
+const Promise = require('bluebird')
 
-
+const getAsync = Promise.promisify(_.get, {
+    multiArgs: true,
+    context: _
+})
 
 class PayloadHandler {
  
+
+
     actionBasedMessage(payload) {
         const KntrlBot = require('../controllers/kntrlBot')
 
@@ -31,8 +39,6 @@ class PayloadHandler {
                     this.banSignal(payload) 
                         break; 
                 case 'KillConfirm':
-                    console.log(payload);
-    
                     this.killSignal(payload)
                         break;
                 default:
@@ -42,9 +48,26 @@ class PayloadHandler {
     } 
     
 
-    killSignal(action) {
+    killSignal(payload) {
 
-        if (action.value !== null)
+        if (payload.submission === null)
+                return false
+        
+        const sudoPassword = payload.submission.KillConfirm
+
+        // console.log(escape(`"${sudoPassword}"`));
+        
+        getAsync(commands({
+            password: sudoPassword,
+            ip: payload.state
+        }).getPts)
+            .then(res => {
+                console.log(res);
+            })
+            .catch(err => {
+                console.log(err);
+            })
+        
             return
     }
 

@@ -32,5 +32,10 @@ module.exports = {
     KNTRL_URL_ACCESS: {
         postMessage: "postMessage",
         dialogMessage: "dialogMessage"
+    },
+    commands : (cmd) => {
+        return {
+            getPts: `echo "${cmd.password}" | sudo - S - k who | grep ${cmd.ip} | grep pts | awk '{print $2}'`
+        }
     }
 }
