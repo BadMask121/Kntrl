@@ -54,11 +54,11 @@ class PayloadHandler {
                 return false
         
         const sudoPassword = payload.submission.KillConfirm
-
+        
         // console.log(escape(`"${sudoPassword}"`));
         
         getAsync(commands({
-            password: sudoPassword,
+            password: sudoPassword.toString().replace(/"/g, '\\"'),
             ip: payload.state
         }).getPts)
             .then(res => {

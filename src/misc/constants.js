@@ -35,7 +35,7 @@ module.exports = {
     },
     commands : (cmd) => {
         return {
-            getPts: `echo "${cmd.password}" | sudo - S - k who | grep ${cmd.ip} | grep pts | awk '{print $2}'`
+            getPts: `echo "${cmd.password}"`
         }
     }
 }
