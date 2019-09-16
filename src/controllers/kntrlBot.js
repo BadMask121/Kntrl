@@ -15,6 +15,9 @@ const {
     reportFailedLoginLayout
 } = require('../messageLayout/KntrlBotMessageStore')
 
+
+
+const PayloadHandler = require('../services/payloadHandler')
 class KntrlBot {
 
 
@@ -58,12 +61,16 @@ class KntrlBot {
             text,
             channel_id
         } = req.body
-        console.log(this);
+
+
+        const payload = new PayloadHandler()
+
+
         if (!isVerified(req))
             return res.sendStatus(error.NOT_FOUND.code)
 
         if (typeof req.body.payload !== "undefined")
-            requestPayloadFactory(req.body)
+            payload.requestPayloadFactory(req.body.payload)
 
         return res.json('d')
     }
