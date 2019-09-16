@@ -10,11 +10,14 @@ const {
 class PayloadHandler {
  
     actionBasedMessage(payload) {
-        const action = payload.actions
-        payload.ip = action.value
         const KntrlBot = require('../controllers/kntrlBot')
 
+        if (typeof payload.actions !== "undefined") {
+            const action = payload.actions
+            payload.ip = action.value
+        }
         
+
         const {
             sendPostMessageToKntrlSlack
         } = new KntrlBot()
@@ -25,10 +28,12 @@ class PayloadHandler {
                         sendPostMessageToKntrlSlack(enterServerPasswordMessageLayout(payload), KNTRL_URL_ACCESS.dialogMessage)
                         break; 
                 case 'Banalert':
-                    this.banSignal(action) 
+                    this.banSignal(payload) 
                         break; 
                 case 'KillConfirm':
-                    this.killSignal(action)
+                    console.log(payload);
+    
+                    this.killSignal(payload)
                         break;
                 default:
                     
@@ -36,7 +41,7 @@ class PayloadHandler {
             } 
     } 
     
-    
+
     killSignal(action) {
 
         if (action.value !== null)
@@ -61,7 +66,8 @@ class PayloadHandler {
                         payload.actions = actions                         
                             this.actionBasedMessage(payload) 
                 }) 
-        } 
+        }else
+            this.actionBasedMessage(payload)
     }
 }
 

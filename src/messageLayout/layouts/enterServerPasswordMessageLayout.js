@@ -7,6 +7,7 @@ const dialogData = (payload) => {
                 title: 'Confirm server password',
                 callback_id: 'KillConfirm',
                 submit_label: 'KillSession',
+                state: `${payload.ip}`,
                 elements: [
                     {
                         label: 'Enter server password',
@@ -15,7 +16,7 @@ const dialogData = (payload) => {
                         value: '',
                         placeholder: "**********",
                         min_length: 5,
-                        hint: "Kntrl will kill this"
+                        hint: `Kntrl will kill this ${payload.ip} session on server`
                     }
                 ],
                 actions: [
