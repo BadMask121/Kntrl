@@ -18,7 +18,7 @@ module.exports = function reportAcceptedLoginLayout(payload) {
             "title_link": "https://divergent.ng",
             text,
             "color": "#7CD197",
-            "callback_id": "accepted_alert",
+            "callback_id": "Killalert",
             "attachment_type": "default",
             "actions": [
 

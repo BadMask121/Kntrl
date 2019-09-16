@@ -54,7 +54,10 @@ module.exports = {
      * do add slack hooks to channel(s) that kntrl is installed on
      */
     KNTRL_DEFAULT_SLACK_CHANNEL: [
-        "https://hooks.slack.com/services/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"
+        {
+            postMessage: "https://hooks.slack.com/services/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",
+            dialogMessage: "https://slack.com/api/dialog.open"
+        }
     ],
 
 

@@ -28,5 +28,9 @@ module.exports = {
             info: `intruder alert from`,
             title: 'Kntrl Intruder Alert'
         }
+    },
+    KNTRL_URL_ACCESS: {
+        postMessage: "postMessage",
+        dialogMessage: "dialogMessage"
     }
 }

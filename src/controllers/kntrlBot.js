@@ -17,7 +17,7 @@ const {
 
 
 
-const PayloadHandler = require('../services/payloadHandler')
+const PayloadHandler = require('../services/PayloadHandler')
 class KntrlBot {
 
 
@@ -65,16 +65,14 @@ class KntrlBot {
 
         const payload = new PayloadHandler()
 
-
         if (!isVerified(req))
             return res.sendStatus(error.NOT_FOUND.code)
 
         if (typeof req.body.payload !== "undefined")
             payload.requestPayloadFactory(req.body.payload)
-
-        return res.json('d')
+            
+        return false
     }
-
 
 
     // send ssh activities to slack bot
@@ -101,7 +99,7 @@ class KntrlBot {
                             break;
                     }
 
-                    if (this.sendPostMessageToKntrlSlack(message))
+                    if (this.sendPostMessageToKntrlSlack(message, 'postMessage'))
                         return true
                 })
 
@@ -115,9 +113,10 @@ class KntrlBot {
     }
 
     // make request to slack
-    sendPostMessageToKntrlSlack(message) {
+    sendPostMessageToKntrlSlack(message, type) {
+
         const headers = {
-            'Content-Type': 'application/json',
+            'Content-Type': 'application/json;charset=utf-8',
             'Authorization': `Bearer ${SLACK_BOT_ACCESS_TOKEN}`
         }
 
@@ -127,24 +126,26 @@ class KntrlBot {
 
         KNTRL_DEFAULT_SLACK_CHANNEL
             .forEach(element => {
-                axios.post(
-                        element,
+                
+                if (element.hasOwnProperty(type)) {
+                    axios.post(
+                        element[type],
                         message, {
-                            headers
+                        headers
                         }
                     )
                     .then((res) => {
-                        if (res.data === 'ok')
-                            return true
-                    })
+                            if (res.data === 'ok')
+                                return res.data
+                        })
                     .catch((err) => {
                         console.log(err);
-                    });
+                    });       
+                }
             })
 
         return false
     }
 }
-
 
 module.exports = KntrlBot
