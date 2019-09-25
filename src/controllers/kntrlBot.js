@@ -41,15 +41,15 @@ class KntrlBot {
     /**
      * 
      * @param {
-     * token: 'LSB9sW62siZ7ZYOwo7Ff43xI',
-         team_id: 'T8T2PTRMK',
-         team_domain: 'divergent-ng',
-         channel_id: 'GMWJAMNBT',
+     * token: 
+         team_id: ,
+         team_domain: '
+         channel_id: 
          channel_name: 'privategroup',
-         user_id: 'ULS2JJX35',
-         user_name: 'jeffreyefemena4',
+         user_id: 
+         user_name: 
          command: '/kntrl',
-         text: 'port',
+         text: 
      }
      req
      * @param {*} res 
