@@ -55,7 +55,7 @@ module.exports = {
      */
     KNTRL_DEFAULT_SLACK_CHANNEL: [
         {
-            postMessage: "https://hooks.slack.com/services/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",
+            postMessage: env.KNTRL_DEFAULT_SLACK_CHANNEL,
             dialogMessage: "https://slack.com/api/dialog.open"
         }
     ],
