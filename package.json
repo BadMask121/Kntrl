@@ -23,7 +23,7 @@
     "lodash": "^4.17.15",
     "lodash.escaperegexp": "^4.1.2",
     "node-cmd": "^3.0.0",
-    "redis": "^2.8.0",
+    "redis": "^3.1.1",
     "tsscmp": "^1.0.6",
     "yargs": "^14.0.0"
   },
