@@ -33,6 +33,6 @@
     "chai-http": "^4.3.0",
     "debug": "^4.1.1",
     "graphql-tools": "^4.0.5",
-    "mocha": "^6.2.0"
+    "mocha": "^10.2.0"
   }
 }
